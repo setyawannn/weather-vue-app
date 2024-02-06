@@ -55,11 +55,10 @@ interface MapboxSearchResult {
 const router = useRouter()
 
 const previewCity = (searchResult: any) => {
-  console.log(searchResult)
   const [city, state] = searchResult.place_name.split(',')
   router.push({
     name: 'cityView',
-    params: { state: state.replaceAll(' ', ''), city: city },
+    params: { state: state, city: city },
     query: {
       lat: searchResult.geometry.coordinates[1],
       lng: searchResult.geometry.coordinates[0],
