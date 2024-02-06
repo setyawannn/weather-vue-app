@@ -96,7 +96,6 @@
     <div
       class="flex items-center gap-2 py-12 text-white cursor-pointer duration-150 hover:text-red-500"
       @click="removeCity"
-      v-if="showBin"
     >
       <i class="fa-solid fa-trash"></i>
       <p>Remove City</p>
@@ -107,10 +106,8 @@
 <script setup lang="ts">
 import type { LocationObj } from '@/types/interface'
 import axios from 'axios'
-import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-const showBin = ref(true)
 const route = useRoute()
 const getWeatherData = async () => {
   try {
@@ -132,17 +129,6 @@ const getWeatherData = async () => {
     // Delay
     await new Promise((res: any) => setTimeout(res, 1000))
 
-    const savedCitiesString = localStorage.getItem('savedCities')
-
-    if (savedCitiesString !== null) {
-      const cities = JSON.parse(savedCitiesString)
-      const filteredData = cities.filter((city: LocationObj) => city.coords.lat === route.query.lat)
-
-      if (filteredData.length === 0) {
-        showBin.value = false
-      }
-    }
-
     return weatherData.data
   } catch (err) {
     console.log(err)
@@ -157,7 +143,7 @@ const removeCity = () => {
 
   if (savedCitiesString !== null) {
     const cities = JSON.parse(savedCitiesString)
-    const updatedCities = cities.filter((city: LocationObj) => city.id === route.query.id)
+    const updatedCities = cities.filter((city: LocationObj) => city.id !== route.query.id)
     localStorage.setItem('savedCities', JSON.stringify(updatedCities))
     router.push({
       name: 'home'
